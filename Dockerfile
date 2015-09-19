@@ -4,7 +4,7 @@ RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
 
 RUN set -x \
 	&& apt-get update \
-	&& apt-get install -y --no-install-recommends curl ca-certificates \
+	&& apt-get install -y --no-install-recommends curl ca-certificates git \
 	&& rm -rf /var/lib/apt/lists/*
 
 # grab gosu for easy step-down from root
@@ -30,11 +30,9 @@ RUN buildDeps=' \
 	' \
 	&& set -x \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends && rm -rf /var/lib/apt/lists/* \
-	&& curl -sSL "https://ghost.org/archives/ghost-${GHOST_VERSION}.zip" -o ghost.zip \
-	&& unzip ghost.zip \
+	&& git clone https://github.com/mlabieniec/ghost-env.git . \
 	&& npm install --production \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
-	&& rm ghost.zip \
 	&& npm cache clean \
 	&& rm -rf /tmp/npm*
 
